@@ -119,13 +119,11 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setupTabs() {
         tabLayout.addTab(tabLayout.newTab().setText("Albumes"))
-        tabLayout.addTab(tabLayout.newTab().setText("Albumes 2"))
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 when (tab.position) {
                     0 -> loadFragment(albumListFragment)
-                    1 -> loadFragment(albumListFragment)
                 }
             }
 

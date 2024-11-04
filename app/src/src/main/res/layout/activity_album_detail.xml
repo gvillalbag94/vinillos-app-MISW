@@ -76,9 +76,7 @@
                         android:id="@+id/genrePlaceHolder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/genre"
-                        android:textAppearance="@style/header2"
-                        />
+                        android:text="@string/genre" />
 
                     <Space
                         android:layout_width="16dp"
@@ -102,33 +100,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:textAppearance="@style/header2"
+                    app:titleTextAppearance="@style/header1"
                     android:text="@string/canciones" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/songsRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    />
+                    android:padding="16dp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:textAppearance="@style/header2"
+                    app:titleTextAppearance="@style/header1"
                     android:text="@string/artistas" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/artistsRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                     />
+                    android:padding="16dp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:textAppearance="@style/header2"
+                    app:titleTextAppearance="@style/header1"
                     android:text="@string/commentarios" />
 
                 <TextView
