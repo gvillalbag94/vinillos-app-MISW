@@ -16,21 +16,23 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class MainActivityTest {
+class CollectorFlowTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
-    fun IniciarSesionComoUsuarioNormalVerListaAlbumesYDetalleAlbumes() {
+    fun IniciarSesionComoUsuarioCollectorVerListaAlbumesYDetalleAlbumes() {
         onView(withId(R.id.main_activity))
             .check(matches(isDisplayed()))
 
-        onView(withId(R.id.user_avatar))
+        onView(withId(R.id.collector_card_button))
             .perform(click())
 
-
         onView(withId(R.id.home_activity))
+            .check(matches(isDisplayed()))
+
+        onView(withId(R.id.add_nav))
             .check(matches(isDisplayed()))
 
         Thread.sleep(500)
