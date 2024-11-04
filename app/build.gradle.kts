@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.vinillos_app_misw"
-    compileSdk = 34
+    compileSdk = 35
 
     dataBinding {
         enable = true
