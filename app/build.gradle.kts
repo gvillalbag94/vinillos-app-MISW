@@ -4,9 +4,8 @@ plugins {
 }
 
 android {
-
     namespace = "com.example.vinillos_app_misw"
-    compileSdk = 35
+    compileSdk = 34
 
     dataBinding {
         enable = true
@@ -19,12 +18,6 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
     }
 
     buildTypes {
@@ -53,11 +46,10 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.2.0")
     implementation("com.caverock:androidsvg:1.4")
     implementation( "com.google.code.gson:gson:2.10.1")
-    implementation("androidx.test.ext:junit-ktx:1.2.1")
-    implementation("androidx.test.espresso:espresso-contrib:3.6.1")
     testImplementation("junit:junit:4.13.2")
     testImplementation ("io.mockk:mockk:1.12.0")
     testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    testImplementation( "androidx.arch.core:core-testing:2.1.0")
     debugImplementation ("androidx.test:runner:1.6.1")
     debugImplementation ("androidx.test:core:1.6.1")
     debugImplementation("androidx.test.ext:junit:1.2.1")
