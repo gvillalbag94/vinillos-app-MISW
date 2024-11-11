@@ -1,22 +1,29 @@
 package com.example.vinillos_app_misw.album
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.example.vinillos_app_misw.data.model.Album
 import com.example.vinillos_app_misw.data.repositories.AlbumRepository
 import com.example.vinillos_app_misw.presentation.view_model.album.AlbumViewModel
 import io.mockk.MockKAnnotations
+import io.mockk.clearAllMocks
+import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.*
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
 
 @ExperimentalCoroutinesApi
 class AlbumViewModelTest {
@@ -32,76 +39,58 @@ class AlbumViewModelTest {
     @Before
     fun onBefore() {
         MockKAnnotations.init(this)
+        Dispatchers.setMain(StandardTestDispatcher())
         viewModel = AlbumViewModel(albumRepository)
-        Dispatchers.setMain(Dispatchers.Unconfined)
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        clearAllMocks()
     }
 
     @Test
-    fun `getAlbums should update albums LiveData on success`() {
-        //Given
-        val albumList = listOf(Album(
-            id = 100,
-            name = "Buscando América",
-            cover = "https://i.pinimg.com/564x/aa/5f/ed/aa5fed7fac61cc8f41d1e79db917a7cd.jpg",
-            releaseDate = "1984-08-01T00:00:00.000Z",
-            description = "Buscando América es el primer álbum de la banda de Rubén Blades...",
-            genre = "Salsa",
-            recordLabel = "Elektra",
-            tracks = emptyList(),
-            performers = emptyList(),
-            comments = emptyList()
-        ), Album(
-            id = 101,
-            name = "Buscando América",
-            cover = "https://i.pinimg.com/564x/aa/5f/ed/aa5fed7fac61cc8f41d1e79db917a7cd.jpg",
-            releaseDate = "1984-08-01T00:00:00.000Z",
-            description = "Buscando América es el primer álbum de la banda de Rubén Blades...",
-            genre = "Salsa",
-            recordLabel = "Elektra",
-            tracks = emptyList(),
-            performers = emptyList(),
-            comments = emptyList()
-        ))
-
-        every { albumRepository.getAlbums(any(), any()) } answers {
-            val successCallback = firstArg<(List<Album>) -> Unit>()
-            successCallback(albumList)
-        }
-
-        // When
-        viewModel.getAlbums()
-
-        // Expected
-        viewModel.albums.observeForever { actualAlbums ->
-            assertEquals(albumList, actualAlbums)
-        }
-    }
-
-    @Test
-    fun `getAlbums should set error when failure occurs`() = runBlockingTest {
+    fun `getAlbums should update albums LiveData on success`() = runTest {
         // Given
-        val errorMessage = "Error fetching albums"
+        val albumList = listOf(
+            Album(id = 100, name = "Buscando América", cover = "https://image.url", releaseDate = "1984-08-01", description = "Description", genre = "Salsa", recordLabel = "Elektra", tracks = emptyList(), performers = emptyList(), comments = emptyList()),
+            Album(id = 101, name = "Buscando América", cover = "https://image.url", releaseDate = "1984-08-01", description = "Description", genre = "Salsa", recordLabel = "Elektra", tracks = emptyList(), performers = emptyList(), comments = emptyList())
+        )
 
+        // Given
+        coEvery {  albumRepository.getAlbums() } returns albumList
 
-        every { albumRepository.getAlbums(any(), any()) } answers {
-            val errorCallback = secondArg<(String) -> Unit>()
-            errorCallback(errorMessage)
-        }
+        // when
+        val observer = mockk<Observer<List<Album>>>(relaxed = true)
+        viewModel.albums.observeForever(observer)
+        viewModel.getAlbums()
+
+        advanceUntilIdle()
+
+        // then
+        verify { observer.onChanged(albumList) }
+    }
+
+    @Test
+    fun `getAlbums should set error when failure occurs`() = runTest {
+        val errorMessage = "Network Error"
+
+        // Given
+        coEvery { albumRepository.getAlbums() } throws RuntimeException(errorMessage)
 
         // When
+        val observer = mockk<Observer<String>>(relaxed = true)
+        viewModel.error.observeForever(observer)
         viewModel.getAlbums()
+
+        advanceUntilIdle()
 
         // Then
-        assertEquals(errorMessage, viewModel.error.value)
+        verify { observer.onChanged(errorMessage) }
     }
 
     @Test
-    fun `getAlbum should set album when successful`() = runBlockingTest {
+    fun `getAlbum should set album when successful`() = runTest {
         // Given
         val albumToRetrieve = Album(
             id = 1,
@@ -116,36 +105,42 @@ class AlbumViewModelTest {
             comments = emptyList(),
             )
 
-        every { albumRepository.getAlbum(1, any(), any()) } answers {
-            val successCallback = secondArg<(Album) -> Unit>()
-            successCallback(albumToRetrieve)
-        }
+        // Given
+        coEvery { albumRepository.getAlbum(albumToRetrieve.id) } returns albumToRetrieve
 
         // When
-        viewModel.getAlbum(1)
+        val observer = mockk<Observer<Album>>(relaxed = true)
+        viewModel.album.observeForever(observer)
+        viewModel.getAlbum(albumToRetrieve.id)
+
+        advanceUntilIdle()
 
         // Then
-        assertEquals(albumToRetrieve, viewModel.album.value)
+        verify { observer.onChanged(albumToRetrieve) }
     }
 
     @Test
-    fun `getAlbum should set error when album not found`() = runBlockingTest {
+    fun `getAlbum should set error when album not found`() = runTest {
         // Given
         val errorMessage = "Album not found"
-        every { albumRepository.getAlbum(1, any(), any()) } answers {
-            val errorCallback = thirdArg<(String) -> Unit>()
-            errorCallback(errorMessage)
-        }
+        val albumId = 1
+
+        // Given
+        coEvery { albumRepository.getAlbum(albumId) } throws RuntimeException(errorMessage)
 
         // When
-        viewModel.getAlbum(1)
+        val observer = mockk<Observer<String>>(relaxed = true)
+        viewModel.error.observeForever(observer)
+        viewModel.getAlbum(albumId)
+
+        advanceUntilIdle()
 
         // Then
-        assertEquals(errorMessage, viewModel.error.value)
+        verify { observer.onChanged(errorMessage) }
     }
 
     @Test
-    fun `saveAlbumID should call repository to save album ID`() = runBlockingTest {
+    fun `saveAlbumID should call repository to save album ID`() = runTest {
         // Given
         val albumId = 42
 
@@ -157,7 +152,7 @@ class AlbumViewModelTest {
     }
 
     @Test
-    fun `getAlbumId should retrieve album ID from repository`() = runBlockingTest {
+    fun `getAlbumId should retrieve album ID from repository`() = runTest {
         // Given
         val expectedAlbumId = 42
         every { albumRepository.getAlbumId() } returns expectedAlbumId
@@ -170,12 +165,12 @@ class AlbumViewModelTest {
     }
 
     @Test
-    fun `clearAlbumID should clear the album ID in repository and set LiveData to null`() = runBlockingTest {
+    fun `clearAlbumID should clear the album ID in repository and set LiveData to null`() = runTest {
         // When
         viewModel.clearAlbumID()
 
         // Then
-        verify { albumRepository.clearAlbumID() } // Check if the repository method was called
-        assertEquals(null, viewModel.albumId.value) // Ensure the LiveData has been set to null
+        verify { albumRepository.clearAlbumID() }
+        assertEquals(null, viewModel.albumId.value)
     }
 }

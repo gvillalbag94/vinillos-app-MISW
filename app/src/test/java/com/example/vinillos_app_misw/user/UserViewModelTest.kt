@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.*
 import org.junit.Assert.assertEquals
@@ -41,7 +42,7 @@ class UserViewModelTest {
     }
 
     @Test
-    fun `saveUser should call repository to save the user`() = runBlockingTest {
+    fun `saveUser should call repository to save the user`() = runTest {
         // Given
         val user = Usuario(
             tipoUsuario = TipoUsuario.USUARIO
@@ -55,7 +56,7 @@ class UserViewModelTest {
     }
 
     @Test
-    fun `loadUser should retrieve user from repository and set LiveData`() = runBlockingTest {
+    fun `loadUser should retrieve user from repository and set LiveData`() = runTest {
         // Given
         val user = Usuario(
             tipoUsuario = TipoUsuario.USUARIO
@@ -70,7 +71,7 @@ class UserViewModelTest {
     }
 
     @Test
-    fun `loadUser should set user LiveData to null when no user is found`() = runBlockingTest {
+    fun `loadUser should set user LiveData to null when no user is found`() = runTest {
         // Given
         every { userRepository.getUser() } returns null
 
@@ -82,7 +83,7 @@ class UserViewModelTest {
     }
 
     @Test
-    fun `clearUser should call repository to clear user and set LiveData to null`() = runBlockingTest {
+    fun `clearUser should call repository to clear user and set LiveData to null`() = runTest {
         // When
         userViewModel.clearUser()
 

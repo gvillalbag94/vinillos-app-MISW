@@ -3,8 +3,10 @@ package com.example.vinillos_app_misw.presentation.view_model.album
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.vinillos_app_misw.data.model.Album
 import com.example.vinillos_app_misw.data.repositories.AlbumRepository
+import kotlinx.coroutines.launch
 
 class AlbumViewModel( private val repository: AlbumRepository) : ViewModel() {
 
@@ -21,27 +23,26 @@ class AlbumViewModel( private val repository: AlbumRepository) : ViewModel() {
         getAlbums()
     }
 
-     fun getAlbums() {
-        repository.getAlbums(
-            successCallback = { albumList ->
+    fun getAlbums() {
+        viewModelScope.launch {
+            try {
+                val albumList = repository.getAlbums()
                 _albums.value = albumList
-            },
-            errorCallback = { errorMessage ->
-                _error.value = errorMessage
+            } catch (e: Exception) {
+                _error.value = e.message ?: "An error occurred"
             }
-        )
+        }
     }
 
     fun getAlbum(id: Int) {
-        repository.getAlbum(
-            id,
-            successCallback = { album ->
-                _album.value = album
-            },
-            errorCallback = { errorMessage ->
-                _error.value = errorMessage
+        viewModelScope.launch {
+            try {
+                val albumItem = repository.getAlbum(id)
+                _album.value = albumItem
+            } catch (e: Exception) {
+                _error.value = e.message ?: "An error occurred"
             }
-        )
+        }
     }
 
     private val _albumID = MutableLiveData<Int?>()
