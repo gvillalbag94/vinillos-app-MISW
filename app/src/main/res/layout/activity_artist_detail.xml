@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="artist"
+            type="com.example.vinillos_app_misw.data.model.Performer" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/dark"
+        >
+
+        <LinearLayout
+            android:id="@+id/scrollableContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/blur01"
+                android:padding="16dp"
+                android:visibility="visible"
+                app:title="@string/app_name"
+                app:titleTextColor="@color/white"
+                app:titleTextAppearance="@style/header1"
+                app:subtitle="@string/artista"
+                app:subtitleTextAppearance="@style/header6"
+                app:subtitleTextColor="@color/light"
+                />
+
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fillViewport="false">
+
+                <LinearLayout
+                    android:id="@+id/columnContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/artistImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="380dp"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/image_border"
+                        android:clipToOutline="true"/>
+
+                    <TextView
+                        android:id="@+id/artistTitleTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/header2"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="8dp"
+                        android:text="@{artist.name}"
+                        />
+
+
+                    <LinearLayout
+                        android:id="@+id/genderRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="8dp"
+                        >
+
+                        <TextView
+                            android:id="@+id/genrePlaceHolder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tipo:"
+                            android:textAppearance="@style/header2"
+                            />
+
+                        <Space
+                            android:layout_width="16dp"
+                            android:layout_height="0dp"/>
+
+                        <TextView
+                            android:id="@+id/albumGenreTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/header5"
+                            android:text="@string/artista" />
+                    </LinearLayout>
+
+
+
+                    <TextView
+                        android:id="@+id/artistDescriptionTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/header5"
+                        android:layout_margin="16dp"
+                        android:text="@{artist.description}" />
+
+
+                    <LinearLayout
+                        android:id="@+id/birthdateRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/birthdatePlaceHolder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Fecha de nacimiento:"
+                            android:textAppearance="@style/header2"
+                            />
+
+                        <Space
+                            android:layout_width="16dp"
+                            android:layout_height="0dp"/>
+
+                        <TextView
+                            android:id="@+id/artistBirthDateTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/header5"
+                            android:text="@{artist.birthDate}"
+                        />
+                    </LinearLayout>
+
+                    <!--
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:textAppearance="@style/header2"
+                        android:text="@string/canciones" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/songsRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:textAppearance="@style/header2"
+                        android:text="@string/artistas" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/artistsRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:textAppearance="@style/header2"
+                        android:text="@string/commentarios" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:text="The most relevant album of Ruben Blades"
+                        />
+
+                        -->
+
+                </LinearLayout>
+
+            </ScrollView>
+
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom_navigation"
+                android:background="@color/blur01"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                app:itemIconSize="40dp"
+                app:menu="@menu/back_menu"
+                />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
