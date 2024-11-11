@@ -1,8 +1,8 @@
 package com.example.vinillos_app_misw.data.repositories
 
 import android.content.Context
-import com.example.vinillos_app_misw.data.adapters.AlbumAdapter
-import com.example.vinillos_app_misw.data.model.Album
+import com.example.vinillos_app_misw.data.adapters.CollectorAdapter
+import com.example.vinillos_app_misw.data.model.Collector
 import com.example.vinillos_app_misw.data.network.VolleyBroker
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -12,21 +12,20 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-
-class AlbumRepository(context: Context, private val albumAdapter: AlbumAdapter) {
+class CollectorRepository(context: Context, private val collectorAdapter: CollectorAdapter) {
 
     private val volleyBroker: VolleyBroker = VolleyBroker(context)
     private val gson = Gson()
 
-    suspend fun getAlbums(): List<Album> {
+    suspend fun getCollectors(): List<Collector> {
         return withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 val request = VolleyBroker.getRequest(
-                    "albums",
+                    "collectors",
                     { response ->
-                        val albumListType = object : TypeToken<List<Album>>() {}.type
-                        val albums: List<Album> = gson.fromJson(response, albumListType)
-                        continuation.resume(albums)
+                        val collectorListType = object : TypeToken<List<Collector>>() {}.type
+                        val collectors: List<Collector> = gson.fromJson(response, collectorListType)
+                        continuation.resume(collectors)
                     },
                     { error ->
                         continuation.resumeWithException(Exception(error.message ?: "Unknown error"))
@@ -37,15 +36,15 @@ class AlbumRepository(context: Context, private val albumAdapter: AlbumAdapter) 
         }
     }
 
-    suspend fun getAlbum(albumId: Int): Album {
+    suspend fun getCollector(collectorId: Int): Collector {
         return withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 val request = VolleyBroker.getRequest(
-                    "albums/$albumId",
+                    "collectors/$collectorId",
                     { response ->
-                        val albumType = object : TypeToken<Album>() {}.type
-                        val album: Album = gson.fromJson(response, albumType)
-                        continuation.resume(album)
+                        val collectorType = object : TypeToken<Collector>() {}.type
+                        val collector: Collector = gson.fromJson(response, collectorType)
+                        continuation.resume(collector)
                     },
                     { error ->
                         continuation.resumeWithException(Exception(error.message ?: "Unknown error"))
@@ -56,16 +55,15 @@ class AlbumRepository(context: Context, private val albumAdapter: AlbumAdapter) 
         }
     }
 
-    fun saveAlbumID(albumID: Int) {
-        albumAdapter.saveAlbumID(albumID)
+    fun saveCollectorID(collectorID: Int) {
+        collectorAdapter.saveCollectorID(collectorID)
     }
 
-    fun getAlbumId(): Int? {
-        return albumAdapter.getAlbumId()
+    fun getCollectorId(): Int? {
+        return collectorAdapter.getCollectorId()
     }
 
-    fun clearAlbumID() {
-        return albumAdapter.clearAlbumID()
+    fun clearCollectorID() {
+        return collectorAdapter.clearCollectorID()
     }
-
 }

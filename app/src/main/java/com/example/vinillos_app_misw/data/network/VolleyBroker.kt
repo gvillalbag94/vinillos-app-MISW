@@ -16,7 +16,7 @@ import org.json.JSONObject
     * Params:
     ** Context ->
 */
-class VolleyBroker constructor(context: Context){
+class VolleyBroker (context: Context){
 
     /*
         * Instancia que permite la comunicación de la aplicacion con el API del
