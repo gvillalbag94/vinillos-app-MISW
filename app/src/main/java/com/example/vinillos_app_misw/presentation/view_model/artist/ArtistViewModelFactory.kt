@@ -9,6 +9,6 @@ class ArtistViewModelFactory(private val repository: ArtistRepository) : ViewMod
         if (modelClass.isAssignableFrom(ArtistViewModel::class.java)) {
             return ArtistViewModel(repository) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        throw IllegalArgumentException("Error ViewModel class")
     }
 }
