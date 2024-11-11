@@ -13,7 +13,9 @@ import com.example.vinillos_app_misw.data.adapters.UserAdapter
 import com.example.vinillos_app_misw.data.model.TipoUsuario
 import com.example.vinillos_app_misw.data.model.Usuario
 import com.example.vinillos_app_misw.data.repositories.UserRepository
-import com.example.vinillos_app_misw.presentation.ui.views.album.album_list.AlbumListFragment
+import com.example.vinillos_app_misw.presentation.ui.views.album.albumList.AlbumListFragment
+import com.example.vinillos_app_misw.presentation.ui.views.artist.artistList.ArtistListFragment
+import com.example.vinillos_app_misw.presentation.ui.views.collector.collectorList.CollectorListFragment
 import com.example.vinillos_app_misw.presentation.view_model.user.UserViewModel
 import com.example.vinillos_app_misw.presentation.view_model.user.UserViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -25,6 +27,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var tabLayout: TabLayout
     private lateinit var bottomNavigationView: BottomNavigationView
     private val albumListFragment = AlbumListFragment()
+    private val artistListFragment = ArtistListFragment()
+    private val collectorListFragment = CollectorListFragment()
 
 
 
@@ -119,11 +123,15 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setupTabs() {
         tabLayout.addTab(tabLayout.newTab().setText("Albumes"))
+        tabLayout.addTab(tabLayout.newTab().setText("Artistas"))
+        tabLayout.addTab(tabLayout.newTab().setText("Collecionistas"))
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 when (tab.position) {
                     0 -> loadFragment(albumListFragment)
+                    1 -> loadFragment(artistListFragment)
+                    2 -> loadFragment(collectorListFragment)
                 }
             }
 
@@ -133,7 +141,7 @@ class HomeActivity : AppCompatActivity() {
         })
     }
 
-    private fun loadFragment(fragment: Fragment) {
+    internal fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()

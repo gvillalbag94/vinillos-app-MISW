@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="artist"
+            type="com.example.vinillos_app_misw.data.model.Performer" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+
+
+        <!-- Album Image -->
+        <ImageView
+            android:id="@+id/albumImage"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:scaleType="centerCrop"
+            android:layout_margin="8dp"
+            android:background="@drawable/image_border"
+            android:clipToOutline="true"
+            />
+
+        <!-- Album Title and Genre -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/albumTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{artist.name}"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/albumGenre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{artist.name}"
+                android:textColor="#B0B0B0"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Arrow Icon -->
+        <ImageButton
+            android:id="@+id/albumButton"
+            android:background="@color/dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/go_icon"
+            />
+    </LinearLayout>
+</layout>

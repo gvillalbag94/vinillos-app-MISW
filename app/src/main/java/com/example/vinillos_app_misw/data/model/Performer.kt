@@ -9,5 +9,7 @@ data class Performer(
     val name: String,
     val image: String,
     val description: String,
-    val birthDate: String
+    val birthDate: String,
+    val albums: List<Album>,
+    val performerPrizes: List<PerformerPrize>
 )
