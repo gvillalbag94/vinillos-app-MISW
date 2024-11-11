@@ -130,7 +130,6 @@ class HomeActivity : AppCompatActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 when (tab.position) {
                     0 -> loadFragment(albumListFragment)
-                    1 -> loadFragment(artistListFragment)
                     2 -> loadFragment(collectorListFragment)
                 }
             }

@@ -1,6 +1,5 @@
 package com.example.vinillos_app_misw.data.model
 
-
 /*
     * Clase de opciones que define los tipos de usuarios disponibles a acceder en la
     * aplicacion
@@ -15,7 +14,6 @@ enum class TipoUsuario {
     COLECCIONISTA,
     USUARIO
 }
-
 
 /*
     * Clase de datos que modela el comportamiento de una Usuario, principalmente diferencia

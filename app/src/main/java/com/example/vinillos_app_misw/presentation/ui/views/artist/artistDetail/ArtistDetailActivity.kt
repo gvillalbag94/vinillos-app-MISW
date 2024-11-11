@@ -95,19 +95,6 @@ class ArtistDetailActivity : AppCompatActivity() {
                     currentArtist.image,
                 )
 
-                // binding.songsRecyclerView.layoutManager = LinearLayoutManager(this)
-                // val songAdapter = SongAdapter(currentAlbum.tracks, currentAlbum)
-                // binding.songsRecyclerView.adapter = songAdapter
-
-                // binding.artistsRecyclerView.layoutManager = LinearLayoutManager(this)
-                //val artistAdapter =
-                 //   com.example.vinillos_app_misw.presentation.ui.views.album.albumDetail.ArtistAdapter(
-                 //       currentAlbum.performers
-                 //   )
-
-                //binding.artistsRecyclerView.adapter = artistAdapter
-
-
             }
         }
 
