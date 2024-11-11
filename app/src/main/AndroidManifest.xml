@@ -17,7 +17,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="34">
         <activity
-            android:name=".presentation.ui.views.album.album_detail.AlbumDetailActivity"
+            android:name=".presentation.ui.views.artist.artistDetail.ArtistDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.ui.views.album.albumDetail.AlbumDetailActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.ui.views.home.HomeActivity"
