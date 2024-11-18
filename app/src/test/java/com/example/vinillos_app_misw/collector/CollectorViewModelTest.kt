@@ -50,9 +50,7 @@ class CollectorViewModelTest {
             name = "John Doe",
             telephone = "123-456-7890",
             email = "johndoe@example.com",
-            comments = emptyList(),
-            favoritePerformers = emptyList(),
-            collectorAlbums = emptyList()
+
         )
 
         val mockCollector2 = Collector(
@@ -60,9 +58,7 @@ class CollectorViewModelTest {
             name = "John Doe",
             telephone = "123-456-7890",
             email = "johndoe@example.com",
-            comments = emptyList(),
-            favoritePerformers = emptyList(),
-            collectorAlbums = emptyList()
+
         )
 
         val mockCollectors = listOf(mockCollector1, mockCollector2)
@@ -106,9 +102,7 @@ class CollectorViewModelTest {
             name = "John Doe",
             telephone = "123-456-7890",
             email = "johndoe@example.com",
-            comments = emptyList(),
-            favoritePerformers = emptyList(),
-            collectorAlbums = emptyList()
+
         )
 
         // Given

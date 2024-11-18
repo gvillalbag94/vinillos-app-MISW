@@ -14,23 +14,12 @@
         android:gravity="center_vertical">
 
 
-
-        <!-- Album Image -->
-        <ImageView
-            android:id="@+id/albumImage"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:scaleType="centerCrop"
-            android:layout_margin="8dp"
-            android:background="@drawable/image_border"
-            android:clipToOutline="true"
-            />
-
         <!-- Album Title and Genre -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:padding="16dp"
             android:orientation="vertical">
 
             <TextView

@@ -50,8 +50,7 @@ class ArtistViewModelTest {
             image = "image1.png",
             description = "Description1",
             birthDate = "1990-01-01",
-            albums = emptyList(),
-            performerPrizes = emptyList()
+            albumId = 0
         )
         val mockArtist2 = Performer(
             id = 2,
@@ -59,8 +58,7 @@ class ArtistViewModelTest {
             image = "image2.png",
             description = "Description2",
             birthDate = "1992-02-02",
-            albums = emptyList(),
-            performerPrizes = emptyList()
+            albumId = 0
         )
         val mockArtists = listOf(mockArtist1, mockArtist2)
 
@@ -104,8 +102,7 @@ class ArtistViewModelTest {
             image = "image.png",
             description = "Description",
             birthDate = "1990-01-01",
-            albums = emptyList(),
-            performerPrizes = emptyList()
+            albumId = 0
         )
 
         // Given

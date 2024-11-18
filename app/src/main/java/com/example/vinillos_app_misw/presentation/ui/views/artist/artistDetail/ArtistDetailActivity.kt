@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vinillos_app_misw.R
 import com.example.vinillos_app_misw.data.adapters.ArtistAdapter
+import com.example.vinillos_app_misw.data.database.VinilosRoomDatabase
 import com.example.vinillos_app_misw.data.repositories.ArtistRepository
 import com.example.vinillos_app_misw.databinding.ActivityArtistDetailBinding
 import com.example.vinillos_app_misw.presentation.ui.views.album.albumDetail.SongAdapter
@@ -45,6 +46,7 @@ class ArtistDetailActivity : AppCompatActivity() {
     }
 
     private fun startArtistViewModel(): ArtistViewModel {
+        val database = VinilosRoomDatabase.getDatabase(applicationContext)
         val artistAdapter = ArtistAdapter(applicationContext)
         val repository = ArtistRepository(applicationContext, artistAdapter)
         val factory = ArtistViewModelFactory(repository)

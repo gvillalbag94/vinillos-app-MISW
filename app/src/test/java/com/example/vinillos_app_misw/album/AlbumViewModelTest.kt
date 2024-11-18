@@ -3,6 +3,7 @@ package com.example.vinillos_app_misw.album
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.example.vinillos_app_misw.data.model.Album
+import com.example.vinillos_app_misw.data.model.AlbumWithDetails
 import com.example.vinillos_app_misw.data.repositories.AlbumRepository
 import com.example.vinillos_app_misw.presentation.view_model.album.AlbumViewModel
 import io.mockk.MockKAnnotations
@@ -53,15 +54,15 @@ class AlbumViewModelTest {
     fun `getAlbums should update albums LiveData on success`() = runTest {
         // Given
         val albumList = listOf(
-            Album(id = 100, name = "Buscando América", cover = "https://image.url", releaseDate = "1984-08-01", description = "Description", genre = "Salsa", recordLabel = "Elektra", tracks = emptyList(), performers = emptyList(), comments = emptyList()),
-            Album(id = 101, name = "Buscando América", cover = "https://image.url", releaseDate = "1984-08-01", description = "Description", genre = "Salsa", recordLabel = "Elektra", tracks = emptyList(), performers = emptyList(), comments = emptyList())
+            AlbumWithDetails(Album(id = 100, name = "Buscando América", cover = "https://image.url", releaseDate = "1984-08-01", description = "Description", genre = "Salsa", recordLabel = "Elektra"), tracks = emptyList(), performers = emptyList(), comments = emptyList()),
+            AlbumWithDetails(Album(id = 101, name = "Buscando América", cover = "https://image.url", releaseDate = "1984-08-01", description = "Description", genre = "Salsa", recordLabel = "Elektra"), tracks = emptyList(), performers = emptyList(), comments = emptyList())
         )
 
         // Given
         coEvery {  albumRepository.getAlbums() } returns albumList
 
         // when
-        val observer = mockk<Observer<List<Album>>>(relaxed = true)
+        val observer = mockk<Observer<List<AlbumWithDetails>>>(relaxed = true)
         viewModel.albums.observeForever(observer)
         viewModel.getAlbums()
 
@@ -92,26 +93,16 @@ class AlbumViewModelTest {
     @Test
     fun `getAlbum should set album when successful`() = runTest {
         // Given
-        val albumToRetrieve = Album(
-            id = 1,
-            name = "Test Album",
-            cover = "",
-            releaseDate = "",
-            description = "",
-            genre = "",
-            recordLabel = "",
-            tracks = emptyList(),
-            performers = emptyList(),
-            comments = emptyList(),
-            )
+        val albumToRetrieve = AlbumWithDetails(Album(id = 100, name = "Buscando América", cover = "https://image.url", releaseDate = "1984-08-01", description = "Description", genre = "Salsa", recordLabel = "Elektra"), tracks = emptyList(), performers = emptyList(), comments = emptyList())
+
 
         // Given
-        coEvery { albumRepository.getAlbum(albumToRetrieve.id) } returns albumToRetrieve
+        coEvery { albumRepository.getAlbum(albumToRetrieve.album.id) } returns albumToRetrieve
 
         // When
-        val observer = mockk<Observer<Album>>(relaxed = true)
+        val observer = mockk<Observer<AlbumWithDetails>>(relaxed = true)
         viewModel.album.observeForever(observer)
-        viewModel.getAlbum(albumToRetrieve.id)
+        viewModel.getAlbum(albumToRetrieve.album.id)
 
         advanceUntilIdle()
 

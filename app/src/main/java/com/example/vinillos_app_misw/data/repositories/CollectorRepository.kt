@@ -2,6 +2,7 @@ package com.example.vinillos_app_misw.data.repositories
 
 import android.content.Context
 import com.example.vinillos_app_misw.data.adapters.CollectorAdapter
+import com.example.vinillos_app_misw.data.database.dao.CollectorDao
 import com.example.vinillos_app_misw.data.model.Collector
 import com.example.vinillos_app_misw.data.network.VolleyBroker
 import com.google.gson.Gson
@@ -12,12 +13,28 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class CollectorRepository(context: Context, private val collectorAdapter: CollectorAdapter) {
+class CollectorRepository(
+    context: Context,
+    private val collectorAdapter: CollectorAdapter,
+    private val collectorDao: CollectorDao,
+    ) {
 
     private val volleyBroker: VolleyBroker = VolleyBroker(context)
     private val gson = Gson()
 
     suspend fun getCollectors(): List<Collector> {
+        return withContext(Dispatchers.IO) {
+            val localCollectors = collectorDao.getCollectors()
+            if (localCollectors.isNotEmpty()) {
+                return@withContext localCollectors
+            }
+            val networkCollectors = fetchCollectorsFromNetwork()
+            collectorDao.insertCollectors(networkCollectors)
+            return@withContext networkCollectors
+        }
+    }
+
+    private suspend fun fetchCollectorsFromNetwork(): List<Collector> {
         return withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 val request = VolleyBroker.getRequest(

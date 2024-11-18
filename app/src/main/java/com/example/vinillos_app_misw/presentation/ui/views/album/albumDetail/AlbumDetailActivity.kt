@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vinillos_app_misw.R
 import com.example.vinillos_app_misw.data.adapters.AlbumAdapter
 import com.example.vinillos_app_misw.data.adapters.UserAdapter
+import com.example.vinillos_app_misw.data.database.VinilosRoomDatabase
 import com.example.vinillos_app_misw.data.model.Usuario
 import com.example.vinillos_app_misw.data.repositories.AlbumRepository
 import com.example.vinillos_app_misw.data.repositories.UserRepository
@@ -77,11 +78,11 @@ class AlbumDetailActivity(): AppCompatActivity() {
                 binding.album = currentAlbum
                 loadImageFromUrl(
                     binding.albumCoverImageView,
-                    currentAlbum.cover,
+                    currentAlbum.album.cover,
                 )
 
                 binding.songsRecyclerView.layoutManager = LinearLayoutManager(this)
-                val songAdapter = SongAdapter(currentAlbum.tracks, currentAlbum)
+                val songAdapter = SongAdapter(currentAlbum.tracks, currentAlbum.album)
                 binding.songsRecyclerView.adapter = songAdapter
 
                 binding.artistsRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -97,10 +98,11 @@ class AlbumDetailActivity(): AppCompatActivity() {
         )
     }
 
-
     private  fun startAlbumViewModel(): AlbumViewModel {
+        val database = VinilosRoomDatabase.getDatabase(applicationContext)
         val albumAdapter = AlbumAdapter(applicationContext)
-        val repository = AlbumRepository(applicationContext, albumAdapter)
+        val albumDao = database.albumDao()
+        val repository = AlbumRepository(applicationContext, albumAdapter,albumDao)
         val factory = AlbumViewModelFactory(repository)
         return ViewModelProvider(this, factory)[AlbumViewModel::class.java]
     }

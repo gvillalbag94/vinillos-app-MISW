@@ -2,30 +2,53 @@ package com.example.vinillos_app_misw.data.repositories
 
 import android.content.Context
 import com.example.vinillos_app_misw.data.adapters.AlbumAdapter
+import com.example.vinillos_app_misw.data.database.dao.AlbumDao
 import com.example.vinillos_app_misw.data.model.Album
+import com.example.vinillos_app_misw.data.model.AlbumWithDetails
+import com.example.vinillos_app_misw.data.model.Collector
+import com.example.vinillos_app_misw.data.model.Comment
+import com.example.vinillos_app_misw.data.model.Performer
+import com.example.vinillos_app_misw.data.model.Track
 import com.example.vinillos_app_misw.data.network.VolleyBroker
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 
-class AlbumRepository(context: Context, private val albumAdapter: AlbumAdapter) {
+class AlbumRepository(
+    context: Context,
+    private val albumAdapter: AlbumAdapter,
+    private val albumDao: AlbumDao,
+    ) {
 
     private val volleyBroker: VolleyBroker = VolleyBroker(context)
     private val gson = Gson()
 
-    suspend fun getAlbums(): List<Album> {
+    suspend fun getAlbums(): List<AlbumWithDetails> {
+        return withContext(Dispatchers.IO) {
+            val localCollectors = albumDao.getAlbums()
+            if (localCollectors.isNotEmpty()) {
+                return@withContext localCollectors
+            }
+            val networkAlbums = fetchAlbumsFromNetwork()
+            albumDao.insertAlbumsWithDetails(networkAlbums)
+            return@withContext networkAlbums
+        }
+    }
+
+    private suspend fun fetchAlbumsFromNetwork(): List<AlbumWithDetails> {
         return withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 val request = VolleyBroker.getRequest(
                     "albums",
                     { response ->
-                        val albumListType = object : TypeToken<List<Album>>() {}.type
-                        val albums: List<Album> = gson.fromJson(response, albumListType)
+                        val albums: List<AlbumWithDetails> = parseAlbumJson(response)
                         continuation.resume(albums)
                     },
                     { error ->
@@ -37,14 +60,91 @@ class AlbumRepository(context: Context, private val albumAdapter: AlbumAdapter) 
         }
     }
 
-    suspend fun getAlbum(albumId: Int): Album {
+    private fun parseAlbumJson(json: String): List<AlbumWithDetails> {
+        if (json.isEmpty()) return emptyList()
+
+        val jsonArray = JSONArray(json)
+
+        return (0 until jsonArray.length()).map { index ->
+            val jsonObject = jsonArray.getJSONObject(index)
+
+            val album = Album(
+                id = jsonObject.getInt("id"),
+                name = jsonObject.getString("name"),
+                cover = jsonObject.getString("cover"),
+                releaseDate = jsonObject.getString("releaseDate"),
+                description = jsonObject.getString("description"),
+                genre = jsonObject.getString("genre"),
+                recordLabel = jsonObject.getString("recordLabel")
+            )
+
+            val tracks = if (jsonObject.has("tracks") && !jsonObject.isNull("tracks")) {
+                jsonObject.getJSONArray("tracks").let { tracksArray ->
+                    (0 until tracksArray.length()).map { i ->
+                        val track = tracksArray.getJSONObject(i)
+                        Track(
+                            id = track.getInt("id"),
+                            name = track.getString("name"),
+                            duration = track.getString("duration"),
+                            albumId = album.id
+                        )
+                    }
+                }
+            } else emptyList()
+
+            val performers = if (jsonObject.has("performers") && !jsonObject.isNull("performers")) {
+                jsonObject.getJSONArray("performers").let { performersArray ->
+                    (0 until performersArray.length()).map { i ->
+                        val performer = performersArray.getJSONObject(i)
+                        Performer(
+                            id = performer.getInt("id"),
+                            name = performer.getString("name"),
+                            image = performer.getString("image"),
+                            description = performer.getString("description"),
+                            birthDate = performer.optString("birthDate", "1970-01-01T00:00:00.000Z"), // Optional
+                            albumId = album.id
+                        )
+                    }
+                }
+            } else emptyList()
+
+            val comments = if (jsonObject.has("comments") && !jsonObject.isNull("comments")) {
+                jsonObject.getJSONArray("comments").let { commentsArray ->
+                    (0 until commentsArray.length()).map { i ->
+                        val comment = commentsArray.getJSONObject(i)
+                        Comment(
+                            id = comment.getInt("id"),
+                            description = comment.getString("description"),
+                            rating = comment.getInt("rating"),
+                            albumId = album.id
+                        )
+                    }
+                }
+            } else emptyList()
+
+            AlbumWithDetails(
+                album = album,
+                tracks = tracks,
+                performers = performers,
+                comments = comments
+            )
+        }
+    }
+
+    suspend fun getAlbum(albumId: Int): AlbumWithDetails {
+        return withContext(Dispatchers.IO) {
+            val networkAlbum = fetchAlbumFromNetwork(albumId)
+            return@withContext networkAlbum
+        }
+    }
+
+    private suspend fun fetchAlbumFromNetwork(albumId: Int): AlbumWithDetails {
         return withContext(Dispatchers.IO) {
             suspendCoroutine { continuation ->
                 val request = VolleyBroker.getRequest(
                     "albums/$albumId",
                     { response ->
-                        val albumType = object : TypeToken<Album>() {}.type
-                        val album: Album = gson.fromJson(response, albumType)
+                        val album: AlbumWithDetails = parserAlbumJson(response)
                         continuation.resume(album)
                     },
                     { error ->
@@ -55,6 +155,73 @@ class AlbumRepository(context: Context, private val albumAdapter: AlbumAdapter) 
             }
         }
     }
+
+    private fun parserAlbumJson(json: String) : AlbumWithDetails {
+        val jsonObject = JSONObject(json)
+
+        val album = Album(
+            id = jsonObject.getInt("id"),
+            name = jsonObject.getString("name"),
+            cover = jsonObject.getString("cover"),
+            releaseDate = jsonObject.getString("releaseDate"),
+            description = jsonObject.getString("description"),
+            genre = jsonObject.getString("genre"),
+            recordLabel = jsonObject.getString("recordLabel")
+        )
+
+        val tracks = if (jsonObject.has("tracks") && !jsonObject.isNull("tracks")) {
+            jsonObject.getJSONArray("tracks").let { tracksArray ->
+                (0 until tracksArray.length()).map { i ->
+                    val track = tracksArray.getJSONObject(i)
+                    Track(
+                        id = track.getInt("id"),
+                        name = track.getString("name"),
+                        duration = track.getString("duration"),
+                        albumId = album.id
+                    )
+                }
+            }
+        } else emptyList()
+
+        val performers = if (jsonObject.has("performers") && !jsonObject.isNull("performers")) {
+            jsonObject.getJSONArray("performers").let { performersArray ->
+                (0 until performersArray.length()).map { i ->
+                    val performer = performersArray.getJSONObject(i)
+                    Performer(
+                        id = performer.getInt("id"),
+                        name = performer.getString("name"),
+                        image = performer.getString("image"),
+                        description = performer.getString("description"),
+                        birthDate = performer.optString("birthDate", "1970-01-01T00:00:00.000Z"), // Optional
+                        albumId = album.id
+                    )
+                }
+            }
+        } else emptyList()
+
+        val comments = if (jsonObject.has("comments") && !jsonObject.isNull("comments")) {
+            jsonObject.getJSONArray("comments").let { commentsArray ->
+                (0 until commentsArray.length()).map { i ->
+                    val comment = commentsArray.getJSONObject(i)
+                    Comment(
+                        id = comment.getInt("id"),
+                        description = comment.getString("description"),
+                        rating = comment.getInt("rating"),
+                        albumId = album.id
+                    )
+                }
+            }
+        } else emptyList()
+
+        return AlbumWithDetails(
+            album = album,
+            tracks = tracks,
+            performers = performers,
+            comments = comments
+        )
+    }
+
+
 
     fun saveAlbumID(albumID: Int) {
         albumAdapter.saveAlbumID(albumID)

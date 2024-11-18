@@ -3,7 +3,7 @@
     <data>
         <variable
             name="album"
-            type="com.example.vinillos_app_misw.data.model.Album" />
+            type="com.example.vinillos_app_misw.data.model.AlbumWithDetails" />
     </data>
 
     <LinearLayout
@@ -37,7 +37,7 @@
                 android:id="@+id/albumTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{album.name}"
+                android:text="@{album.album.name}"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:textSize="18sp" />
@@ -46,7 +46,7 @@
                 android:id="@+id/albumGenre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{album.genre}"
+                android:text="@{album.album.genre}"
                 android:textColor="#B0B0B0"
                 android:textSize="14sp" />
         </LinearLayout>
