@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vinillos_app_misw.data.adapters.CollectorAdapter
+import com.example.vinillos_app_misw.data.database.VinilosRoomDatabase
 import com.example.vinillos_app_misw.data.model.Collector
 import com.example.vinillos_app_misw.data.repositories.CollectorRepository
 import com.example.vinillos_app_misw.databinding.FragmentCollectorListBinding
@@ -29,9 +30,11 @@ class CollectorListFragment : Fragment(), CollectorListAdapter.OnCollectorClickL
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val database = VinilosRoomDatabase.getDatabase(requireContext())
         _binding = FragmentCollectorListBinding.inflate(inflater, container, false)
         val collectorAdapter = CollectorAdapter(requireContext())
-        val repository = CollectorRepository(requireContext(),collectorAdapter)
+        val collectorDao = database.collectorDao()
+        val repository = CollectorRepository(requireContext(),collectorAdapter,collectorDao)
         val factory = CollectorViewModelFactory(repository)
         collectorViewModel = ViewModelProvider(this, factory)[CollectorViewModel::class.java]
         return binding.root
@@ -48,6 +51,6 @@ class CollectorListFragment : Fragment(), CollectorListAdapter.OnCollectorClickL
     }
 
     override fun onCollectorClick(collector: Collector) {
-        TODO("Not yet implemented")
+        return
     }
 }

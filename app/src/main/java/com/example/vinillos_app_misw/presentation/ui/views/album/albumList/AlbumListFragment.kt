@@ -9,7 +9,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.vinillos_app_misw.data.adapters.AlbumAdapter
-import com.example.vinillos_app_misw.data.model.Album
+import com.example.vinillos_app_misw.data.database.VinilosRoomDatabase
+import com.example.vinillos_app_misw.data.model.AlbumWithDetails
 import com.example.vinillos_app_misw.data.repositories.AlbumRepository
 import com.example.vinillos_app_misw.databinding.FragmentAlbumListBinding
 import com.example.vinillos_app_misw.presentation.ui.views.album.albumDetail.AlbumDetailActivity
@@ -33,8 +34,10 @@ class AlbumListFragment : Fragment(), AlbumListAdapter.OnAlbumClickListener  {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentAlbumListBinding.inflate(inflater, container, false)
+        val database = VinilosRoomDatabase.getDatabase(requireContext().applicationContext)
         val albumAdapter = AlbumAdapter(requireContext())
-        val repository = AlbumRepository(requireContext(),albumAdapter)
+        val albumDao = database.albumDao()
+        val repository = AlbumRepository(requireContext(),albumAdapter, albumDao)
         val factory = AlbumViewModelFactory(repository)
         albumViewModel = ViewModelProvider(this, factory)[AlbumViewModel::class.java]
         return binding.root
@@ -53,8 +56,8 @@ class AlbumListFragment : Fragment(), AlbumListAdapter.OnAlbumClickListener  {
         albumViewModel.getAlbums()
     }
 
-    override fun onAlbumClick(album: Album) {
-        albumViewModel.saveAlbumID(album.id)
+    override fun onAlbumClick(album: AlbumWithDetails) {
+        albumViewModel.saveAlbumID(album.album.id)
         val intent = Intent(requireContext(), AlbumDetailActivity::class.java)
         startActivity(intent)
     }

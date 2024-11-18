@@ -4,7 +4,7 @@
     <data>
         <variable
             name="album"
-            type="com.example.vinillos_app_misw.data.model.Album" />
+            type="com.example.vinillos_app_misw.data.model.AlbumWithDetails" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -61,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:text="@{album.name}"
+                    android:text="@{album.album.name}"
                     android:textAppearance="@style/header2" />
 
 
@@ -88,7 +88,7 @@
                         android:id="@+id/albumGenreTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{album.genre}" />
+                        android:text="@{album.album.genre}" />
                 </LinearLayout>
 
                 <TextView
@@ -96,7 +96,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:text="@{album.description}" />
+                    android:text="@{album.album.description}" />
 
                 <TextView
                     android:layout_width="match_parent"

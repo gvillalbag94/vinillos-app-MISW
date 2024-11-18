@@ -1,20 +1,21 @@
 package com.example.vinillos_app_misw.presentation.view_model.album
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.vinillos_app_misw.data.model.Album
+import com.example.vinillos_app_misw.data.model.AlbumWithDetails
 import com.example.vinillos_app_misw.data.repositories.AlbumRepository
 import kotlinx.coroutines.launch
 
 class AlbumViewModel( private val repository: AlbumRepository) : ViewModel() {
 
-    private val _albums = MutableLiveData<List<Album>>()
-    val albums: LiveData<List<Album>> get() = _albums
+    private val _albums = MutableLiveData<List<AlbumWithDetails>>()
+    val albums: LiveData<List<AlbumWithDetails>> get() = _albums
 
-    private val _album = MutableLiveData<Album>()
-    val album: LiveData<Album> get() = _album
+    private val _album = MutableLiveData<AlbumWithDetails>()
+    val album: LiveData<AlbumWithDetails> get() = _album
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error

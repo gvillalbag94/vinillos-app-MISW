@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vinillos_app_misw.data.model.Album
+import com.example.vinillos_app_misw.data.model.AlbumWithDetails
 import com.example.vinillos_app_misw.databinding.AlbumCardBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,19 +15,19 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class AlbumListAdapter(private val albums: List<Album>, private val listener: OnAlbumClickListener
+class AlbumListAdapter(private val albums: List<AlbumWithDetails>, private val listener: OnAlbumClickListener
 ) : RecyclerView.Adapter<AlbumListAdapter.AlbumViewHolder>() {
 
     interface OnAlbumClickListener {
-        fun onAlbumClick(album: Album)
+        fun onAlbumClick(album: AlbumWithDetails)
     }
 
     inner class AlbumViewHolder(private val binding: AlbumCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(album: Album) {
+        fun bind(album: AlbumWithDetails) {
             binding.album = album
             loadImageFromUrl(
                 binding.albumImage,
-                album.cover
+                album.album.cover
             )
 
             // Set up click listener
