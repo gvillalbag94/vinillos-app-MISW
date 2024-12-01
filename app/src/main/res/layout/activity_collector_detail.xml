@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="collector"
+            type="com.example.vinillos_app_misw.data.model.CollectorWithDetails" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/dark"
+        >
+
+        <LinearLayout
+            android:id="@+id/scrollableContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/blur01"
+                android:padding="16dp"
+                android:visibility="visible"
+                app:title="@string/app_name"
+                app:titleTextColor="@color/white"
+                app:titleTextAppearance="@style/header1"
+                app:subtitle="@{collector.collector.name}"
+                app:subtitleTextAppearance="@style/header6"
+                app:subtitleTextColor="@color/light"
+                />
+
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fillViewport="false">
+
+                <LinearLayout
+                    android:id="@+id/columnContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/telephoneRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="8dp"
+                        >
+
+                        <TextView
+                            android:id="@+id/telephonePlaceHolder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Telefono:"
+                            android:textAppearance="@style/header2"
+                            />
+
+                        <Space
+                            android:layout_width="16dp"
+                            android:layout_height="0dp"/>
+
+                        <TextView
+                            android:id="@+id/collectorTelephoneTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/header5"
+                            android:text="@{collector.collector.telephone}" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/emailRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="8dp"
+                        >
+
+                        <TextView
+                            android:id="@+id/emailPlaceHolder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Email:"
+                            android:textAppearance="@style/header2"
+                            />
+
+                        <Space
+                            android:layout_width="16dp"
+                            android:layout_height="0dp"/>
+
+                        <TextView
+                            android:id="@+id/collectorEmailTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/header5"
+                            android:text="@{collector.collector.email}" />
+                    </LinearLayout>
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:textAppearance="@style/header2"
+                        android:text="Artistas favoritos:" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/favoritePerformersRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:textAppearance="@style/header2"
+                        android:text="Albumes:" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/albumesRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:textAppearance="@style/header2"
+                        android:text="Comentarios:" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/commentsRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+
+                </LinearLayout>
+
+            </ScrollView>
+
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom_navigation"
+                android:background="@color/blur01"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                app:itemIconSize="40dp"
+                app:menu="@menu/back_menu"
+                />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

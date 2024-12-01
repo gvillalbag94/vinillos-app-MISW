@@ -85,6 +85,7 @@
                         android:layout_height="0dp"/>
 
                     <TextView
+                        android:contentDescription="Informacion de genero del album"
                         android:id="@+id/albumGenreTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -92,18 +93,43 @@
                 </LinearLayout>
 
                 <TextView
+                    android:contentDescription="Informacion de descripcion del album"
                     android:id="@+id/albumDescriptionTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:text="@{album.album.description}" />
-
-                <TextView
+                
+                <LinearLayout
+                    android:id="@+id/trackTitleHolder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:padding="16dp"
-                    android:textAppearance="@style/header2"
-                    android:text="@string/canciones" />
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/header2"
+                        android:text="@string/canciones" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <ImageButton
+
+                        android:id="@+id/addTrackButton"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@android:color/transparent"
+                        android:clickable="true"
+                        android:contentDescription="Add track button"
+                        android:focusable="true"
+                        android:padding="8dp"
+                        android:src="@drawable/add_icon" />
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/songsRecyclerView"
