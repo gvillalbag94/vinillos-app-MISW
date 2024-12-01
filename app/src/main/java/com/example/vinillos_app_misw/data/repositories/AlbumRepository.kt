@@ -1,6 +1,7 @@
 package com.example.vinillos_app_misw.data.repositories
 
 import android.content.Context
+import android.util.Log
 import com.example.vinillos_app_misw.data.adapters.AlbumAdapter
 import com.example.vinillos_app_misw.data.database.dao.AlbumDao
 import com.example.vinillos_app_misw.data.model.Album
@@ -28,7 +29,6 @@ class AlbumRepository(
     ) {
 
     private val volleyBroker: VolleyBroker = VolleyBroker(context)
-    private val gson = Gson()
 
     suspend fun getAlbums(): List<AlbumWithDetails> {
         return withContext(Dispatchers.IO) {
@@ -36,7 +36,14 @@ class AlbumRepository(
             if (localCollectors.isNotEmpty()) {
                 return@withContext localCollectors
             }
+            return@withContext fetchAlbums()
+        }
+    }
+
+    suspend fun fetchAlbums() : List<AlbumWithDetails> {
+        return withContext(Dispatchers.IO) {
             val networkAlbums = fetchAlbumsFromNetwork()
+            albumDao.clearTable()
             albumDao.insertAlbumsWithDetails(networkAlbums)
             return@withContext networkAlbums
         }
@@ -48,7 +55,7 @@ class AlbumRepository(
                 val request = VolleyBroker.getRequest(
                     "albums",
                     { response ->
-                        val albums: List<AlbumWithDetails> = parseAlbumJson(response)
+                        val albums: List<AlbumWithDetails> = parseAlbumsJson(response)
                         continuation.resume(albums)
                     },
                     { error ->
@@ -60,7 +67,7 @@ class AlbumRepository(
         }
     }
 
-    private fun parseAlbumJson(json: String): List<AlbumWithDetails> {
+    private fun parseAlbumsJson(json: String): List<AlbumWithDetails> {
         if (json.isEmpty()) return emptyList()
 
         val jsonArray = JSONArray(json)
@@ -102,7 +109,8 @@ class AlbumRepository(
                             image = performer.getString("image"),
                             description = performer.getString("description"),
                             birthDate = performer.optString("birthDate", "1970-01-01T00:00:00.000Z"), // Optional
-                            albumId = album.id
+                            albumId = album.id,
+                            collectorId = null,
                         )
                     }
                 }
@@ -116,7 +124,8 @@ class AlbumRepository(
                             id = comment.getInt("id"),
                             description = comment.getString("description"),
                             rating = comment.getInt("rating"),
-                            albumId = album.id
+                            albumId = album.id,
+                            collectorId = null,
                         )
                     }
                 }
@@ -193,7 +202,8 @@ class AlbumRepository(
                         image = performer.getString("image"),
                         description = performer.getString("description"),
                         birthDate = performer.optString("birthDate", "1970-01-01T00:00:00.000Z"), // Optional
-                        albumId = album.id
+                        albumId = album.id,
+                        collectorId = null,
                     )
                 }
             }
@@ -207,7 +217,8 @@ class AlbumRepository(
                         id = comment.getInt("id"),
                         description = comment.getString("description"),
                         rating = comment.getInt("rating"),
-                        albumId = album.id
+                        albumId = album.id,
+                        collectorId = null,
                     )
                 }
             }
@@ -221,7 +232,81 @@ class AlbumRepository(
         )
     }
 
+    suspend fun addAlbum(album: Album) : Boolean {
+        return withContext(Dispatchers.IO) {
+            suspendCoroutine { continuation ->
 
+                val postParams = mapOf<String, Any>(
+                    "name" to album.name,
+                    "cover" to album.cover,
+                    "releaseDate" to  album.releaseDate,
+                    "description" to album.description,
+                    "genre" to album.genre,
+                    "recordLabel" to album.recordLabel,
+                )
+
+                val request = VolleyBroker.postRequest(
+                    "albums",
+                    JSONObject(postParams),
+                    { response ->
+                        val albumWithDetails : AlbumWithDetails = parserAlbumJson(response.toString())
+                        if ( albumWithDetails.album.id != 0) {
+                            continuation.resume(true)
+                        } else {
+                            continuation.resume(false)
+                        }
+                    },
+                    { error ->
+                        if (error.networkResponse != null && error.networkResponse.statusCode == 400) {
+                            val errorMessage = String(error.networkResponse.data)
+                            Log.e("NetworkError", "400 Bad Request: $errorMessage")
+                        } else {
+                            // Handle other errors
+                            Log.e("NetworkError", "Error: ${error.message}")
+                        }
+                        continuation.resume(false)
+                    }
+                )
+                volleyBroker.instance.add(request)
+            }
+        }
+    }
+
+    suspend fun addTrack(albumID: Int, nameTrack: String, duration: String,) : Boolean {
+        return withContext(Dispatchers.IO) {
+            suspendCoroutine { continuation ->
+
+                val postParams = mapOf<String, Any>(
+                    "name" to nameTrack,
+                    "duration" to duration,
+                )
+
+                val request = VolleyBroker.postRequest(
+                    "albums/$albumID/tracks",
+                    JSONObject(postParams),
+                    { response ->
+
+                        if ( response["id"] != 0) {
+                            continuation.resume(true)
+                        } else {
+                            continuation.resume(false)
+                        }
+                    },
+                    { error ->
+                        if (error.networkResponse != null && error.networkResponse.statusCode == 400) {
+                            val errorMessage = String(error.networkResponse.data)
+                            Log.e("NetworkError", "400 Bad Request: $errorMessage")
+                        } else {
+                            // Handle other errors
+                            Log.e("NetworkError", "Error: ${error.message}")
+                        }
+                        continuation.resume(false)
+                    }
+                )
+                volleyBroker.instance.add(request)
+            }
+        }
+    }
 
     fun saveAlbumID(albumID: Int) {
         albumAdapter.saveAlbumID(albumID)
@@ -233,6 +318,14 @@ class AlbumRepository(
 
     fun clearAlbumID() {
         return albumAdapter.clearAlbumID()
+    }
+
+    fun setUpdateAlbum(refresh: Boolean) {
+        albumAdapter.saveUpdateAlbums(refresh)
+    }
+
+    fun getUpdateAlbum(): Boolean {
+        return albumAdapter.getUpdateAlbums()
     }
 
 }
