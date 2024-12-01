@@ -272,7 +272,42 @@ class AlbumRepository(
         }
     }
 
+    suspend fun addTrack(albumID: Int, nameTrack: String, duration: String,) : Boolean {
+        return withContext(Dispatchers.IO) {
+            suspendCoroutine { continuation ->
 
+                val postParams = mapOf<String, Any>(
+                    "name" to nameTrack,
+                    "duration" to duration,
+                )
+
+                val request = VolleyBroker.postRequest(
+                    "albums/$albumID/tracks",
+                    JSONObject(postParams),
+                    { response ->
+
+                        if ( response["id"] != 0) {
+                            continuation.resume(true)
+                        } else {
+                            continuation.resume(false)
+                        }
+                    },
+                    { error ->
+                        if (error.networkResponse != null && error.networkResponse.statusCode == 400) {
+                            val errorMessage = String(error.networkResponse.data)
+                            Log.e("NetworkError", "400 Bad Request: $errorMessage")
+                        } else {
+                            // Handle other errors
+                            Log.e("NetworkError", "Error: ${error.message}")
+                        }
+                        continuation.resume(false)
+                    }
+                )
+                volleyBroker.instance.add(request)
+                
+            }
+        }
+    }
 
     fun saveAlbumID(albumID: Int) {
         albumAdapter.saveAlbumID(albumID)
