@@ -304,7 +304,6 @@ class AlbumRepository(
                     }
                 )
                 volleyBroker.instance.add(request)
-                
             }
         }
     }
@@ -321,6 +320,12 @@ class AlbumRepository(
         return albumAdapter.clearAlbumID()
     }
 
+    fun setUpdateAlbum(refresh: Boolean) {
+        albumAdapter.saveUpdateAlbums(refresh)
+    }
 
+    fun getUpdateAlbum(): Boolean {
+        return albumAdapter.getUpdateAlbums()
+    }
 
 }
