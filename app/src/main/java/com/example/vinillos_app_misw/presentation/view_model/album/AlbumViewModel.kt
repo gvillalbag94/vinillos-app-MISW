@@ -65,18 +65,7 @@ class AlbumViewModel( private val repository: AlbumRepository) : ViewModel() {
         }
     }
 
-    fun addTrack(albumID: Int, nameTrack: String, duration: String) {
-        viewModelScope.launch {
-            try {
-                val addTrackItem = repository.addTrack(albumID, nameTrack, duration)
-                _addTrack.value = addTrackItem
-            } catch (e: Exception) {
-                _addTrack.value = false
-                _error.value = e.message ?: "Ocurrio un error"
-            }
-        }
 
-    }
 
     fun fetchAlbums() {
         viewModelScope.launch {
