@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vinillos_app_misw.data.model.Album
 import com.example.vinillos_app_misw.data.model.AlbumWithDetails
 import com.example.vinillos_app_misw.data.repositories.AlbumRepository
 import kotlinx.coroutines.launch
@@ -19,6 +20,12 @@ class AlbumViewModel( private val repository: AlbumRepository) : ViewModel() {
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
+
+    private val _addAlbum = MutableLiveData<Boolean>()
+    val addAlbum: LiveData<Boolean> get() = _addAlbum
+
+    private val _addTrack = MutableLiveData<Boolean>()
+    val addTrack: LiveData<Boolean> get() = _addTrack
 
     init {
         getAlbums()
@@ -41,7 +48,44 @@ class AlbumViewModel( private val repository: AlbumRepository) : ViewModel() {
                 val albumItem = repository.getAlbum(id)
                 _album.value = albumItem
             } catch (e: Exception) {
-                _error.value = e.message ?: "An error occurred"
+                _error.value = e.message ?: "Ocurrio un error"
+            }
+        }
+    }
+
+    fun addAlbum(album: Album) {
+        viewModelScope.launch {
+            try {
+                val addAlbumItem = repository.addAlbum(album)
+                _addAlbum.value = addAlbumItem
+            } catch (e: Exception) {
+                _addAlbum.value = false
+                _error.value = e.message ?: "Ocurrio un error"
+            }
+        }
+    }
+
+    fun addTrack(albumID: Int, nameTrack: String, duration: String) {
+        viewModelScope.launch {
+            try {
+                val addTrackItem = repository.addTrack(albumID, nameTrack, duration)
+                _addTrack.value = addTrackItem
+            } catch (e: Exception) {
+                _addTrack.value = false
+                _error.value = e.message ?: "Ocurrio un error"
+            }
+        }
+
+    }
+
+    fun fetchAlbums() {
+        viewModelScope.launch {
+            try {
+                val albums = repository.fetchAlbums()
+                _albums.value = albums
+            } catch (e: Exception) {
+                _addAlbum.value = false
+                _error.value = e.message ?: "Ocurrio un error"
             }
         }
     }
@@ -61,4 +105,14 @@ class AlbumViewModel( private val repository: AlbumRepository) : ViewModel() {
         repository.clearAlbumID()
         _albumID.value = null
     }
+
+    fun saveUpdateValue(refresh: Boolean) {
+        repository.setUpdateAlbum(refresh)
+    }
+
+    fun getUpdateValue(): Boolean {
+        return repository.getUpdateAlbum()
+    }
+
+
 }
