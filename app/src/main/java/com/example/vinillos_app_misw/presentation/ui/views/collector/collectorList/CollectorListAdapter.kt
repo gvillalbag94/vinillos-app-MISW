@@ -4,18 +4,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vinillos_app_misw.data.model.Collector
+import com.example.vinillos_app_misw.data.model.CollectorWithDetails
 import com.example.vinillos_app_misw.databinding.CollectorCardBinding
 
 
-class CollectorListAdapter(private val collectors: List<Collector>, private val listener: OnCollectorClickListener)
+class CollectorListAdapter(private val collectors: List<CollectorWithDetails>, private val listener: OnCollectorClickListener)
     : RecyclerView.Adapter<CollectorListAdapter.CollectorViewHolder>() {
 
     interface OnCollectorClickListener {
-        fun onCollectorClick(collector: Collector)
+        fun onCollectorClick(collector: CollectorWithDetails)
     }
 
     inner class CollectorViewHolder(private val binding: CollectorCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(collector: Collector) {
+        fun bind(collector: CollectorWithDetails) {
             binding.collector = collector
 
             // Set up click listener

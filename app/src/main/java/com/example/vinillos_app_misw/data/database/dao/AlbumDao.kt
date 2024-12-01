@@ -52,4 +52,7 @@ interface AlbumDao {
             insertAlbumWithDetails(albumWithDetails)
         }
     }
+
+    @Query("DELETE FROM album_table")
+    suspend fun clearTable()
 }

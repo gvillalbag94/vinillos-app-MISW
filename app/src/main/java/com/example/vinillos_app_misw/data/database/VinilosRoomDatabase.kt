@@ -7,6 +7,7 @@ import com.example.vinillos_app_misw.data.database.dao.CollectorDao
 import com.example.vinillos_app_misw.data.database.dao.PerformerDao
 import com.example.vinillos_app_misw.data.model.Album
 import com.example.vinillos_app_misw.data.model.Collector
+import com.example.vinillos_app_misw.data.model.CollectorAlbum
 import com.example.vinillos_app_misw.data.model.Comment
 import com.example.vinillos_app_misw.data.model.Performer
 import com.example.vinillos_app_misw.data.model.PerformerPrize
@@ -18,8 +19,9 @@ import com.example.vinillos_app_misw.data.model.Track
     Performer::class,
     Track::class,
     Comment::class,
+    CollectorAlbum::class,
     PerformerPrize::class],
-    version = 1,
+    version = 2,
     exportSchema = false,
     )
 abstract class VinilosRoomDatabase : RoomDatabase() {
@@ -39,7 +41,8 @@ abstract class VinilosRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     VinilosRoomDatabase::class.java,
                     "vinilos_database"
-                ).build()
+                )    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
 
                 instance
