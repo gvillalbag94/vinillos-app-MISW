@@ -21,11 +21,21 @@ data class Collector(
 )
 
 
-data class CollectorWithAlbums(
+data class CollectorWithDetails(
     @Embedded val collector: Collector,
     @Relation(
         parentColumn = "id",
         entityColumn = "collectorId"
     )
-    val albums: List<CollectorAlbum>
+    val favoritePerformers: List<Performer>,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "collectorId"
+    )
+    val collectorAlbums: List<CollectorAlbum>,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "collectorId"
+    )
+    val comments: List<Comment>
 )

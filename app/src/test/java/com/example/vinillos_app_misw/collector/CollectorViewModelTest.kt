@@ -3,6 +3,7 @@ package com.example.vinillos_app_misw.collector
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.example.vinillos_app_misw.data.model.Collector
+import com.example.vinillos_app_misw.data.model.CollectorWithDetails
 import com.example.vinillos_app_misw.data.repositories.CollectorRepository
 import com.example.vinillos_app_misw.presentation.view_model.collector.CollectorViewModel
 import io.mockk.MockKAnnotations
@@ -45,20 +46,26 @@ class CollectorViewModelTest {
 
     @Test
     fun `getCollectors should post collector list on success`() = runTest {
-        val mockCollector1 = Collector(
-            id = 1,
-            name = "John Doe",
-            telephone = "123-456-7890",
-            email = "johndoe@example.com",
-
+        val mockCollector1 = CollectorWithDetails(
+            collector = Collector( id = 1,
+                name = "John Doe",
+                telephone = "123-456-7890",
+                email = "johndoe@example.com",
+                ),
+            favoritePerformers = emptyList(),
+            comments = emptyList(),
+            collectorAlbums = emptyList(),
         )
 
-        val mockCollector2 = Collector(
-            id = 2,
-            name = "John Doe",
-            telephone = "123-456-7890",
-            email = "johndoe@example.com",
-
+        val mockCollector2 = CollectorWithDetails(
+            collector = Collector( id = 2,
+                name = "John Doe",
+                telephone = "123-456-7890",
+                email = "johndoe@example.com",
+            ),
+            favoritePerformers = emptyList(),
+            comments = emptyList(),
+            collectorAlbums = emptyList(),
         )
 
         val mockCollectors = listOf(mockCollector1, mockCollector2)
@@ -67,7 +74,7 @@ class CollectorViewModelTest {
         coEvery { collectorRepository.getCollectors() } returns mockCollectors
 
         // when
-        val observer = mockk<Observer<List<Collector>>>(relaxed = true)
+        val observer = mockk<Observer<List<CollectorWithDetails>>>(relaxed = true)
         viewModel.collectors.observeForever(observer)
         viewModel.getCollectors()
 
@@ -97,21 +104,24 @@ class CollectorViewModelTest {
 
     @Test
     fun `getCollector should post collector on success`() = runTest {
-        val mockCollector = Collector(
-            id = 1,
-            name = "John Doe",
-            telephone = "123-456-7890",
-            email = "johndoe@example.com",
-
+        val mockCollector = CollectorWithDetails(
+            collector = Collector( id = 1,
+                name = "John Doe",
+                telephone = "123-456-7890",
+                email = "johndoe@example.com",
+            ),
+            favoritePerformers = emptyList(),
+            comments = emptyList(),
+            collectorAlbums = emptyList(),
         )
 
         // Given
-        coEvery { collectorRepository.getCollector(mockCollector.id) } returns mockCollector
+        coEvery { collectorRepository.getCollector(mockCollector.collector.id) } returns mockCollector
 
         // When
-        val observer = mockk<Observer<Collector>>(relaxed = true)
+        val observer = mockk<Observer<CollectorWithDetails>>(relaxed = true)
         viewModel.collector.observeForever(observer)
-        viewModel.getCollector(mockCollector.id)
+        viewModel.getCollector(mockCollector.collector.id)
 
         advanceUntilIdle()
 

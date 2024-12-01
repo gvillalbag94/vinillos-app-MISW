@@ -1,5 +1,6 @@
 package com.example.vinillos_app_misw.presentation.ui.views.home
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -13,8 +14,10 @@ import com.example.vinillos_app_misw.data.adapters.UserAdapter
 import com.example.vinillos_app_misw.data.model.TipoUsuario
 import com.example.vinillos_app_misw.data.model.Usuario
 import com.example.vinillos_app_misw.data.repositories.UserRepository
+import com.example.vinillos_app_misw.presentation.ui.views.album.addNewAlbum.AddNewAlbumActivity
 import com.example.vinillos_app_misw.presentation.ui.views.album.albumList.AlbumListFragment
 import com.example.vinillos_app_misw.presentation.ui.views.artist.artistList.ArtistListFragment
+import com.example.vinillos_app_misw.presentation.ui.views.collector.collectorDetail.CollectorDetailActivity
 import com.example.vinillos_app_misw.presentation.ui.views.collector.collectorList.CollectorListFragment
 import com.example.vinillos_app_misw.presentation.view_model.user.UserViewModel
 import com.example.vinillos_app_misw.presentation.view_model.user.UserViewModelFactory
@@ -104,7 +107,11 @@ class HomeActivity : AppCompatActivity() {
                     finish()
                 }
                 R.id.add_nav -> {
-                    // Navegar agregar album
+                    val intent = Intent(
+                        applicationContext,
+                        AddNewAlbumActivity::class.java,
+                        )
+                    startActivity(intent)
                 }
             }
             false
@@ -151,4 +158,5 @@ class HomeActivity : AppCompatActivity() {
         userViewModel.clearUser()
         super.onDestroy()
     }
+
 }

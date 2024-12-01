@@ -19,6 +19,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="34">
         <activity
+            android:name=".presentation.ui.views.collector.collectorDetail.CollectorDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.ui.views.album.addNewTrack.AddNewTrackActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.ui.views.album.addNewAlbum.AddNewAlbumActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.ui.views.artist.artistDetail.ArtistDetailActivity"
             android:exported="false" />
         <activity

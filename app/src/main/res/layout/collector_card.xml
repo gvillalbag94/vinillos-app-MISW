@@ -3,7 +3,7 @@
     <data>
         <variable
             name="collector"
-            type="com.example.vinillos_app_misw.data.model.Collector" />
+            type="com.example.vinillos_app_misw.data.model.CollectorWithDetails" />
     </data>
 
     <LinearLayout
@@ -26,7 +26,7 @@
                 android:id="@+id/albumTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{collector.name}"
+                android:text="@{collector.collector.name}"
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:textSize="18sp" />
@@ -35,7 +35,7 @@
                 android:id="@+id/albumGenre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{collector.name}"
+                android:text="@{collector.collector.name}"
                 android:textColor="#B0B0B0"
                 android:textSize="14sp" />
         </LinearLayout>

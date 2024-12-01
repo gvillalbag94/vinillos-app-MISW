@@ -17,6 +17,11 @@ class AlbumAdapter(context: Context){
         Context.MODE_PRIVATE,
     )
 
+    private val sharedPreferencesUpdate: SharedPreferences = context.getSharedPreferences(
+        "refreshAlbums",
+        Context.MODE_PRIVATE,
+    )
+
 
     /*
         * saveUser es el metodo que permite guardar en la memoria cache el tipo de usuario
@@ -45,5 +50,13 @@ class AlbumAdapter(context: Context){
     fun clearAlbumID() {
         sharedPreferences.edit().remove("album_id_key").apply()
         return
+    }
+
+    fun saveUpdateAlbums(refresh: Boolean) {
+        sharedPreferencesUpdate.edit().putBoolean("update_album", refresh).apply()
+    }
+
+    fun getUpdateAlbums() : Boolean{
+        return sharedPreferencesUpdate.getBoolean("update_album", false)
     }
 }
