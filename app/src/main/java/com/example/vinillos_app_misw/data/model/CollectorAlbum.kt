@@ -8,7 +8,12 @@ import androidx.room.*
 //    val status: String
 //)
 
-@Entity(tableName = "collector_album_table")
+@Entity(
+    tableName = "collector_album_table",
+    indices = [Index(value = ["collectorId"])],
+    foreignKeys = [
+        ForeignKey(entity = Performer::class, parentColumns = ["id"], childColumns = ["collectorId"]),
+    ])
 data class CollectorAlbum(
     @PrimaryKey val id: Int,
     val collectorId: Int, // Foreign Key

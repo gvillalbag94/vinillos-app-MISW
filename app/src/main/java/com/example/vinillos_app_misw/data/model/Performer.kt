@@ -17,13 +17,19 @@ import androidx.room.*
 //)
 
 @Entity(tableName = "performer_table",
-    indices = [Index(value = ["albumId"])],
+    indices = [Index(value = ["albumId"]), Index(value = ["collectorId"])],
     foreignKeys = [ForeignKey(
         entity = Album::class,
         parentColumns = ["id"],
         childColumns = ["albumId"],
         onDelete = ForeignKey.CASCADE
-    )]
+    ),
+        ForeignKey(
+            entity = Collector::class,
+            parentColumns = ["id"],
+            childColumns = ["collectorId"],
+            onDelete = ForeignKey.CASCADE
+        )]
 )
 data class Performer(
     @PrimaryKey val id: Int,
@@ -31,5 +37,6 @@ data class Performer(
     val image: String,
     val description: String,
     val birthDate: String,
-    val albumId: Int
+    val albumId: Int?,
+    val collectorId: Int?,
 )
